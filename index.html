@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+	<meta charset="UTF-8">
+	<title>drag drop test</title>
+	<style>
+		*{
+			margin: 0;
+			padding: 0;
+		}
+		.box{
+			position: fixed;
+			top: auto;
+			bottom: 0;
+			left:0;
+			right:0;
+			height:0;
+			transition: all 0.2s ease-in;
+		}
+
+		.show{
+			height: auto;
+		}
+
+		.panel{
+			margin: 0 auto;
+			width: 1000px;
+			background: gray;
+
+
+		}
+
+		.header{
+			height: 50px;
+			background: red;
+			cursor: move;
+		}
+
+		.mask{
+			position: absolute;
+			top:0;
+			left:0;
+			height: 100%;
+			width: 100%;
+		}
+	</style>
+</head>
+<body>
+	<div class="mask">
+
+		<button id="testBut"> show panel </button>
+
+		<div id="testBox" class="box">
+			<div id="testPanel" class="panel">
+				<div class="header"></div>
+				<div>
+					11212<br/>
+					11212<br/>
+					11212<br/>
+					11212<br/>
+					11212<br/>
+					11212<br/>
+					11212<br/>
+					11212<br/>
+					11212<br/>
+					11212<br/>
+					11212<br/>
+					11212<br/>
+					11212<br/>
+					11212<br/>
+					11212<br/>
+					11212<br/>
+				</div>
+			</div>
+		</div>
+	</div>
+	<script>
+		var start = {};
+		var canDrag = false;
+		document.querySelector('#testBut').addEventListener('click', function(event){
+			var box = document.querySelector('#testBox');
+			var className = box.className;
+
+			if(className.indexOf('show') >= 0){
+				event.target.textContent = ' show panel ';
+				box.className = 'box';
+			}else{
+				box.className = 'box show';
+				event.target.textContent = ' hide panel ';
+			}
+
+			event.stopPropagation();
+			event.cancelBubble = 1;
+		});
+
+		console.info(document.querySelector('#testPanel .header'));
+
+		document.querySelector('#testPanel .header').addEventListener('mousedown', function(event){
+			var panel = document.querySelector('#testPanel');
+
+			if(panel.style.position !== 'absolute'){
+				panel.setAttribute('style', 'position:absolute; bottom:0; left:' + ((document.documentElement.clientWidth - panel.offsetWidth)/2) + 'px;');
+			}
+
+			start.x = event.clientX;
+			start.y = event.clientY;
+
+			canDrag = true;
+		});
+
+
+		console.info(document.querySelector('.mask').addEventListener);
+
+		document.querySelector('.mask').addEventListener('mousemove', function(event){
+			var panel = document.querySelector('#testPanel');
+			var position = {};
+
+			if(canDrag === true){
+
+				var bottom,
+					left;
+
+				//console.info(panel.offsetLeft, panel.parentNode.offsetTop, panel.offsetWidth, panel.offsetHeight);
+
+				position.x = event.clientX - start.x;
+				position.y = event.clientY - start.y;
+
+				//console.info(panel.style.left, panel.style.bottom, position.x, position.y);
+
+				bottom = parseInt(panel.style.bottom.replace(/px/g, ''), 10) - position.y;
+				left = parseInt(panel.style.left.replace(/px/g, ''), 10) + position.x;
+
+				panel.setAttribute('style', 'position:absolute; bottom:' + bottom + 'px; left:' + left + 'px;');
+
+				start.x = event.clientX;
+				start.y = event.clientY;
+			}
+		});
+
+		document.querySelector('.mask').addEventListener('mouseup', function(){
+			if(canDrag === true){
+				console.info('mouse up');
+				canDrag = false;
+			}
+		});
+	</script>
+</body>
+</html>
